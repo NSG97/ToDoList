@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.nishantgahlawat.todolist.NewToDo">
+
+    <EditText
+        android:id="@+id/NewTitleET"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:hint="@string/EnterTitle"/>
+
+    <EditText
+        android:id="@+id/NewDescriptionET"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5.0"
+        android:hint="@string/EnterDescription"
+        android:gravity="start"
+        android:layout_marginBottom="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1.0">
+
+        <EditText
+            android:id="@+id/DatePickerET"
+            android:focusable="false"
+            android:hint="Enter Date"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"/>
+
+        <EditText
+            android:id="@+id/TimePickerET"
+            android:focusable="false"
+            android:hint="Enter Time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"/>
+
+    </LinearLayout>
+</LinearLayout>

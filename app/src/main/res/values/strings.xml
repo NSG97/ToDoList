@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ToDoList</string>
+    <string name="action_settings">Settings</string>
+    <string name="EnterTitle">Enter Title</string>
+    <string name="EnterDescription">Enter Description</string>
+    <string name="Submit">Add</string>
+    <string name="AddToDo">Add</string>
+    <string name="UpdateToDo">Update</string>
+</resources>
