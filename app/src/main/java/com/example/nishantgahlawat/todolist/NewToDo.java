@@ -65,7 +65,7 @@ public class NewToDo extends AppCompatActivity {
                         Calendar newTime = Calendar.getInstance();
                         newTime.set(Calendar.HOUR_OF_DAY,i);
                         newTime.set(Calendar.MINUTE,i1);
-                        TimePickerET.setText(new SimpleDateFormat("kk/mm").format(newTime.getTime()));
+                        TimePickerET.setText(new SimpleDateFormat("kk:mm a").format(newTime.getTime()));
                     }
                 },calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),false);
                 timePickerDialog.show();
