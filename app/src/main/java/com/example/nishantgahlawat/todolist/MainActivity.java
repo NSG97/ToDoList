@@ -1,12 +1,14 @@
 package com.example.nishantgahlawat.todolist;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -169,8 +171,36 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
     private class toDoItemLongClick implements AdapterView.OnItemLongClickListener{
 
         @Override
-        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Toast.makeText(MainActivity.this,"something2",Toast.LENGTH_SHORT).show();
+        public boolean onItemLongClick(AdapterView<?> parent, View view,final int position, long id) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+            builder.setTitle("Delete");
+            builder.setMessage("Are You Sure?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    ToDoItem toDoItem = toDoItemArrayList.get(position);
+
+                    ToDoOpenHelper toDoOpenHelper = ToDoOpenHelper.getToDoOpenHelperInstance(MainActivity.this);
+                    SQLiteDatabase sqLiteDatabase = toDoOpenHelper.getReadableDatabase();
+
+                    String selection = ToDoOpenHelper.TODO_ID+"="+toDoItem.getId();
+
+                    sqLiteDatabase.delete(ToDoOpenHelper.TODO_TABLE_NAME,selection,null);
+
+                    MainActivity.this.toDoItemArrayList.remove(toDoItem);
+                    MainActivity.this.toDoAdapter.notifyDataSetChanged();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
             return true;
         }
     }
