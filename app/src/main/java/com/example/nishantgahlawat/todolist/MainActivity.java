@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
 
                         Intent intent = new Intent(MainActivity.this,AlarmReceiver.class);
                         intent.putExtra(IntentConstraints.NotificationToDoExtra,toDoItem);
+
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
                         alarmManager.setExact(AlarmManager.RTC,toDoItem.getReminder(),pendingIntent);

@@ -11,5 +11,5 @@ public class IntentConstraints {
     public static final String DetailsPositionExtra = "DetailsPosition";
     public static final String DetailsToDoExtra = "DetailsToDo";
     public static final String DetailsReminderChanged = "DetailsReminderChanged";
-    public static final String NotificationToDoExtra = "NotToDoItem";
+    public static final String NotificationToDoExtra = "NotificationToDoItem";
 }
