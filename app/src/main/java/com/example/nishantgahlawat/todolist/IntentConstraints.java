@@ -7,6 +7,7 @@ package com.example.nishantgahlawat.todolist;
 public class IntentConstraints {
     public static final String NewTitleExtra = "NewTitle";
     public static final String NewDescriptionExtra = "NewDescription";
+    public static final String NewToDoExtra = "NewToDo";
     public static final String DetailsPositionExtra = "DetailsPosition";
     public static final String DetailsToDoExtra = "DetailsToDo";
 }

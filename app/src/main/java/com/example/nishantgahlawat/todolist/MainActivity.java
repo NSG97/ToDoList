@@ -80,22 +80,7 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
         switch (requestCode){
             case NEW_TODO:
                 if(resultCode==RESULT_OK){
-                    String newTitle = data.getStringExtra(IntentConstraints.NewTitleExtra);
-                    String newDescription = data.getStringExtra(IntentConstraints.NewDescriptionExtra);
-                    long currentTime = System.currentTimeMillis();
-
-                    ToDoOpenHelper toDoOpenHelper = ToDoOpenHelper.getToDoOpenHelperInstance(this);
-                    SQLiteDatabase sqLiteDatabase = toDoOpenHelper.getWritableDatabase();
-
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(ToDoOpenHelper.TODO_TITLE,newTitle);
-                    contentValues.put(ToDoOpenHelper.TODO_DESCRIPTION,newDescription);
-                    contentValues.put(ToDoOpenHelper.TODO_DONE,0);
-                    contentValues.put(ToDoOpenHelper.TODO_CREATED,currentTime);
-
-                    long id = sqLiteDatabase.insert(ToDoOpenHelper.TODO_TABLE_NAME,null,contentValues);
-
-                    ToDoItem toDoItem = new ToDoItem(id,newTitle,newDescription,false,currentTime);
+                    ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra(IntentConstraints.NewToDoExtra);
 
                     toDoItemArrayList.add(toDoItem);
                     toDoAdapter.notifyDataSetChanged();
@@ -110,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                     toDoItemToChange.setTitle(toDoItem.getTitle());
                     toDoItemToChange.setDescription(toDoItem.getDescription());
                     toDoItemToChange.setDone(toDoItem.isDone());
+                    toDoItemToChange.setReminder(toDoItem.getReminder());
 
                     toDoAdapter.notifyDataSetChanged();
 
@@ -122,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                     cv.put(ToDoOpenHelper.TODO_TITLE,toDoItem.getTitle());
                     cv.put(ToDoOpenHelper.TODO_DESCRIPTION,toDoItem.getDescription());
                     cv.put(ToDoOpenHelper.TODO_DONE,toDoItem.isDone()?1:0);
+                    cv.put(ToDoOpenHelper.TODO_REMINDER,toDoItem.getReminder());
 
                     sqLiteDatabase.update(ToDoOpenHelper.TODO_TABLE_NAME,cv,selection,null);
 
@@ -143,8 +130,11 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
             long id = cursor.getLong(cursor.getColumnIndex(ToDoOpenHelper.TODO_ID));
             long created = cursor.getLong(cursor.getColumnIndex(ToDoOpenHelper.TODO_CREATED));
             boolean done = (cursor.getInt(cursor.getColumnIndex(ToDoOpenHelper.TODO_DONE))==0)?false:true;
+            long reminder = cursor.getInt(cursor.getColumnIndex(ToDoOpenHelper.TODO_REMINDER));
 
             ToDoItem toDoItem = new ToDoItem(id,title,description,done,created);
+            toDoItem.setReminder(reminder);
+
             toDoItemArrayList.add(toDoItem);
         }
         cursor.close();

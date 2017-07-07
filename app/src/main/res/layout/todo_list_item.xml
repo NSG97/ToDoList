@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants">
 
-    <ImageButton
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1.0"
-        android:id="@+id/completedButton"/>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        app:cardCornerRadius="2dp"
+        app:contentPadding="10dp">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="5.0"
-        android:layout_marginLeft="10dp"
-        android:gravity="center_vertical"
-        android:id="@+id/toDoTV"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.0"
+                android:id="@+id/completedButton"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="5.0"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:id="@+id/toDoTV"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>

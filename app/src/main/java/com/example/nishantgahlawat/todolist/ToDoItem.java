@@ -14,6 +14,7 @@ public class ToDoItem implements Serializable{
     private String description;
     private boolean done;
     private long created;
+    private long reminder;
 
     public ToDoItem(long id, String title, String description, boolean done, long created) {
         this.id = id;
@@ -58,5 +59,17 @@ public class ToDoItem implements Serializable{
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public void setReminder(long reminder) {
+        this.reminder = reminder;
+    }
+
+    public boolean hasReminder() {
+        return (reminder==-1)?false:true;
+    }
+
+    public long getReminder() {
+        return reminder;
     }
 }

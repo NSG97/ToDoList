@@ -18,7 +18,7 @@
         android:id="@+id/NewDescriptionET"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5.0"
+        android:layout_weight="3.0"
         android:hint="@string/EnterDescription"
         android:gravity="start"
         android:layout_marginBottom="10dp"/>
@@ -27,11 +27,35 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        android:layout_weight="1.0">
+        android:layout_weight="0.5">
+
+        <TextView
+            android:text="Reminder(Optional):"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.0"/>
+
+        <Button
+            android:id="@+id/ClearReminderButton"
+            android:text="Clear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.7">
 
         <EditText
             android:id="@+id/DatePickerET"
             android:focusable="false"
+            android:gravity="center"
             android:hint="Enter Date"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -40,6 +64,7 @@
         <EditText
             android:id="@+id/TimePickerET"
             android:focusable="false"
+            android:gravity="center"
             android:hint="Enter Time"
             android:layout_width="0dp"
             android:layout_height="match_parent"

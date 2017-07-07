@@ -16,6 +16,7 @@ public class ToDoOpenHelper extends SQLiteOpenHelper {
     public static final String TODO_DESCRIPTION = "Description";
     public static final String TODO_CREATED = "Created";
     public static final String TODO_DONE = "Done";
+    public static final String TODO_REMINDER = "Reminder";
 
     private static ToDoOpenHelper toDoOpenHelper;
 
@@ -33,7 +34,7 @@ public class ToDoOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String query = "CREATE TABLE " + TODO_TABLE_NAME + "(" + TODO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
                 TODO_TITLE + " TEXT, " + TODO_DESCRIPTION + " TEXT, " + TODO_CREATED + " INTEGER, " +
-                TODO_DONE + " INTEGER DEFAULT 0);";
+                TODO_DONE + " INTEGER DEFAULT 0, "+TODO_REMINDER+" INTEGER);";
         sqLiteDatabase.execSQL(query);
     }
 
