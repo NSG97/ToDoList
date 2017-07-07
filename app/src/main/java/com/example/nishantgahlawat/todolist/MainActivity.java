@@ -1,11 +1,15 @@
 package com.example.nishantgahlawat.todolist;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
@@ -84,6 +89,15 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
 
                     toDoItemArrayList.add(toDoItem);
                     toDoAdapter.notifyDataSetChanged();
+
+                    if(toDoItem.hasReminder()){
+                        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+                        Intent intent = new Intent(MainActivity.this,AlarmReceiver.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        alarmManager.setExact(AlarmManager.RTC,toDoItem.getReminder(),pendingIntent);
+                    }
                 }
                 break;
             case DETAILS_TODO:
@@ -112,6 +126,19 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
 
                     sqLiteDatabase.update(ToDoOpenHelper.TODO_TABLE_NAME,cv,selection,null);
 
+                    boolean reminderChanged = data.getBooleanExtra(IntentConstraints.DetailsReminderChanged,false);
+                    if(reminderChanged){
+                        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+                        Intent intent = new Intent(MainActivity.this,AlarmReceiver.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        alarmManager.cancel(pendingIntent);
+
+                        pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        alarmManager.setExact(AlarmManager.RTC,toDoItem.getReminder(),pendingIntent);
+                    }
                 }
                 break;
             default:
@@ -177,6 +204,15 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                     String selection = ToDoOpenHelper.TODO_ID+"="+toDoItem.getId();
 
                     sqLiteDatabase.delete(ToDoOpenHelper.TODO_TABLE_NAME,selection,null);
+
+                    if(toDoItem.hasReminder()){
+                        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+                        Intent intent = new Intent(MainActivity.this,AlarmReceiver.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        alarmManager.cancel(pendingIntent);
+                    }
 
                     MainActivity.this.toDoItemArrayList.remove(toDoItem);
                     MainActivity.this.toDoAdapter.notifyDataSetChanged();

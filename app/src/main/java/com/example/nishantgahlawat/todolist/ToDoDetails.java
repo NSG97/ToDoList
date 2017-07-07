@@ -37,6 +37,7 @@ public class ToDoDetails extends AppCompatActivity {
     int position;
     ToDoItem toDoItem;
     Calendar newReminder;
+    boolean reminderChanged=false;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -96,6 +97,7 @@ public class ToDoDetails extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         newReminder.set(year,month,dayOfMonth);
                         DatePickerET.setText(new java.text.SimpleDateFormat("dd-MM-yyyy").format(newReminder.getTime()));
+                        reminderChanged=true;
                     }
                 },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.show();
@@ -112,6 +114,7 @@ public class ToDoDetails extends AppCompatActivity {
                         newReminder.set(Calendar.HOUR_OF_DAY,hour_of_day);
                         newReminder.set(Calendar.MINUTE,minute);
                         TimePickerET.setText(new java.text.SimpleDateFormat("hh:mm a").format(newReminder.getTime()));
+                        reminderChanged=true;
                     }
                 },calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),false);
                 timePickerDialog.show();
@@ -123,6 +126,7 @@ public class ToDoDetails extends AppCompatActivity {
             public void onClick(View v) {
                 DatePickerET.setText("");
                 TimePickerET.setText("");
+                reminderChanged=true;
                 newReminder=Calendar.getInstance();
             }
         });
@@ -148,29 +152,32 @@ public class ToDoDetails extends AppCompatActivity {
                 toDoItem.setTitle(newTitle);
                 toDoItem.setDescription(newDescription);
 
-                if(DatePickerET.getText().toString().equals("")){
-                    if(TimePickerET.getText().toString().equals("")){
-                        toDoItem.setReminder(-1);
+                if(reminderChanged){
+                    if(DatePickerET.getText().toString().equals("")){
+                        if(TimePickerET.getText().toString().equals("")){
+                            toDoItem.setReminder(-1);
+                        }
+                        else {
+                            Toast.makeText(this,"Reminder Date Set To Today",Toast.LENGTH_SHORT).show();
+                            toDoItem.setReminder(newReminder.getTimeInMillis());
+                        }
                     }
-                    else {
-                        Toast.makeText(this,"Reminder Date Set To Today",Toast.LENGTH_SHORT).show();
-                        toDoItem.setReminder(newReminder.getTimeInMillis());
-                    }
-                }
-                else{
-                    if(TimePickerET.getText().toString().equals("")){
-                        Toast.makeText(this,"Reminder Time Set To Midnight",Toast.LENGTH_SHORT).show();
-                        newReminder.set(Calendar.HOUR_OF_DAY,0);
-                        newReminder.set(Calendar.MINUTE,0);
-                        toDoItem.setReminder(newReminder.getTimeInMillis());
-                    }
-                    else {
-                        toDoItem.setReminder(newReminder.getTimeInMillis());
+                    else{
+                        if(TimePickerET.getText().toString().equals("")){
+                            Toast.makeText(this,"Reminder Time Set To Midnight",Toast.LENGTH_SHORT).show();
+                            newReminder.set(Calendar.HOUR_OF_DAY,0);
+                            newReminder.set(Calendar.MINUTE,0);
+                            toDoItem.setReminder(newReminder.getTimeInMillis());
+                        }
+                        else {
+                            toDoItem.setReminder(newReminder.getTimeInMillis());
+                        }
                     }
                 }
 
                 intent.putExtra(IntentConstraints.DetailsPositionExtra,position);
                 intent.putExtra(IntentConstraints.DetailsToDoExtra,toDoItem);
+                intent.putExtra(IntentConstraints.DetailsReminderChanged,reminderChanged);
                 setResult(RESULT_OK,intent);
                 finish();
                 return true;

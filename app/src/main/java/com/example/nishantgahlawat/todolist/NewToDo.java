@@ -39,6 +39,8 @@ public class NewToDo extends AppCompatActivity {
         setContentView(R.layout.activity_new_to_do);
 
         reminder = Calendar.getInstance();
+        reminder.set(Calendar.SECOND,0);
+        reminder.set(Calendar.MILLISECOND,0);
 
         titleET = (EditText)findViewById(R.id.NewTitleET);
         descriptionET = (EditText)findViewById(R.id.NewDescriptionET);
