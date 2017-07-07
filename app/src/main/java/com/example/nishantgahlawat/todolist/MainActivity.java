@@ -77,6 +77,16 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                 startActivityForResult(intent,NEW_TODO);
             }
         });
+
+        Intent notifIntent = getIntent();
+        ToDoItem notifToDoItem = (ToDoItem) notifIntent.getSerializableExtra(IntentConstraints.NotificationToDoExtra);
+
+        if(notifToDoItem!=null){
+            Intent intent = new Intent(MainActivity.this,ToDoDetails.class);
+            intent.putExtra(IntentConstraints.DetailsPositionExtra,toDoItemArrayList.indexOf(notifToDoItem));
+            intent.putExtra(IntentConstraints.DetailsToDoExtra, notifToDoItem);
+            startActivityForResult(intent,DETAILS_TODO);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -94,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 
                         Intent intent = new Intent(MainActivity.this,AlarmReceiver.class);
+                        intent.putExtra(IntentConstraints.NotificationToDoExtra,toDoItem);
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
                         alarmManager.setExact(AlarmManager.RTC,toDoItem.getReminder(),pendingIntent);
@@ -135,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
 
                         alarmManager.cancel(pendingIntent);
 
+                        intent = new Intent(MainActivity.this,AlarmReceiver.class);
+                        intent.putExtra(IntentConstraints.NotificationToDoExtra,toDoItem);
                         pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
                         alarmManager.setExact(AlarmManager.RTC,toDoItem.getReminder(),pendingIntent);
