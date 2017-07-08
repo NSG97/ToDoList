@@ -13,15 +13,19 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ToDoItem toDoItem = (ToDoItem) intent.getSerializableExtra(IntentConstraints.NotificationToDoExtra);
+        Bundle bundle = intent.getBundleExtra(IntentConstraints.NotificationBundleExtra);
+
+        ToDoItem toDoItem = (ToDoItem) bundle.getSerializable(IntentConstraints.NotificationToDoExtra);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
                 .setContentTitle(toDoItem.getTitle())
+                .setAutoCancel(true)
                 .setContentText(toDoItem.getDescription());
 
-        Intent notifIntent = new Intent(context,MainActivity.class);
-        notifIntent.putExtra(IntentConstraints.NotificationToDoExtra,toDoItem);
+        Intent notifIntent = new Intent(context,ToDoDetails.class);
+        notifIntent.putExtra(IntentConstraints.DetailsToDoExtra,toDoItem);
+        notifIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context,(int)toDoItem.getId(),notifIntent
                 ,PendingIntent.FLAG_UPDATE_CURRENT);

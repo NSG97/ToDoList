@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
     ArrayList<ToDoItem> toDoItemArrayList;
     ToDoAdapter toDoAdapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
 
         toDoAdapter.setToDoButtonListener(this);
 
+        getNotificationItemUpdate();
+
         updateToDoList();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -77,16 +80,6 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                 startActivityForResult(intent,NEW_TODO);
             }
         });
-
-        Intent notifIntent = getIntent();
-        ToDoItem notifToDoItem = (ToDoItem) notifIntent.getSerializableExtra(IntentConstraints.NotificationToDoExtra);
-
-        if(notifToDoItem!=null){
-            Intent intent = new Intent(MainActivity.this,ToDoDetails.class);
-            intent.putExtra(IntentConstraints.DetailsPositionExtra,toDoItemArrayList.indexOf(notifToDoItem));
-            intent.putExtra(IntentConstraints.DetailsToDoExtra, notifToDoItem);
-            startActivityForResult(intent,DETAILS_TODO);
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -104,7 +97,10 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 
                         Intent intent = new Intent(MainActivity.this,AlarmReceiver.class);
-                        intent.putExtra(IntentConstraints.NotificationToDoExtra,toDoItem);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(IntentConstraints.NotificationToDoExtra,toDoItem);
+                        intent.putExtra(IntentConstraints.NotificationBundleExtra,bundle);
 
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -148,7 +144,11 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                         alarmManager.cancel(pendingIntent);
 
                         intent = new Intent(MainActivity.this,AlarmReceiver.class);
-                        intent.putExtra(IntentConstraints.NotificationToDoExtra,toDoItem);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(IntentConstraints.NotificationToDoExtra,toDoItem);
+                        intent.putExtra(IntentConstraints.NotificationBundleExtra,bundle);
+
                         pendingIntent = PendingIntent.getBroadcast(MainActivity.this,(int)toDoItem.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
                         alarmManager.setExact(AlarmManager.RTC,toDoItem.getReminder(),pendingIntent);
@@ -157,6 +157,46 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.ToDoB
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void getNotificationItemUpdate() {
+        Intent notifIntent = getIntent();
+        ToDoItem notifToDoItem = (ToDoItem) notifIntent.getSerializableExtra(IntentConstraints.DetailsToDoExtra);
+        if(notifToDoItem!=null) {
+            ToDoOpenHelper toDoOpenHelper = ToDoOpenHelper.getToDoOpenHelperInstance(this);
+            SQLiteDatabase sqLiteDatabase = toDoOpenHelper.getReadableDatabase();
+
+            String selection = ToDoOpenHelper.TODO_ID + "=" + notifToDoItem.getId();
+
+            ContentValues cv = new ContentValues();
+            cv.put(ToDoOpenHelper.TODO_TITLE, notifToDoItem.getTitle());
+            cv.put(ToDoOpenHelper.TODO_DESCRIPTION, notifToDoItem.getDescription());
+            cv.put(ToDoOpenHelper.TODO_DONE, notifToDoItem.isDone() ? 1 : 0);
+            cv.put(ToDoOpenHelper.TODO_REMINDER, notifToDoItem.getReminder());
+
+            sqLiteDatabase.update(ToDoOpenHelper.TODO_TABLE_NAME, cv, selection, null);
+
+            boolean reminderChanged = notifIntent.getBooleanExtra(IntentConstraints.DetailsReminderChanged, false);
+            if (reminderChanged) {
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, (int) notifToDoItem.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                alarmManager.cancel(pendingIntent);
+
+                intent = new Intent(MainActivity.this, AlarmReceiver.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(IntentConstraints.NotificationToDoExtra, notifToDoItem);
+                intent.putExtra(IntentConstraints.NotificationBundleExtra, bundle);
+
+                pendingIntent = PendingIntent.getBroadcast(MainActivity.this, (int) notifToDoItem.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                alarmManager.setExact(AlarmManager.RTC, notifToDoItem.getReminder(), pendingIntent);
+            }
         }
     }
 

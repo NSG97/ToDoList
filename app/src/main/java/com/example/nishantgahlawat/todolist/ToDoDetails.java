@@ -63,7 +63,9 @@ public class ToDoDetails extends AppCompatActivity {
 
 
         newReminder = Calendar.getInstance();
-        newReminder.setTimeInMillis(toDoItem.getReminder());
+        newReminder.setTimeInMillis(toDoItem.getReminder()==-1?toDoItem.getReminder():System.currentTimeMillis());
+        newReminder.set(Calendar.MILLISECOND,0);
+        newReminder.set(Calendar.SECOND,0);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - hh:mm a");
         String time = simpleDateFormat.format(new Date(toDoItem.getCreated()));
@@ -148,7 +150,7 @@ public class ToDoDetails extends AppCompatActivity {
                     return true;
                 }
                 String newDescription = descriptionET.getText().toString().trim();
-                Intent intent = new Intent();
+
                 toDoItem.setTitle(newTitle);
                 toDoItem.setDescription(newDescription);
 
@@ -174,12 +176,22 @@ public class ToDoDetails extends AppCompatActivity {
                         }
                     }
                 }
-
-                intent.putExtra(IntentConstraints.DetailsPositionExtra,position);
-                intent.putExtra(IntentConstraints.DetailsToDoExtra,toDoItem);
-                intent.putExtra(IntentConstraints.DetailsReminderChanged,reminderChanged);
-                setResult(RESULT_OK,intent);
-                finish();
+                if(position!=-1){
+                    Intent intent = new Intent();
+                    intent.putExtra(IntentConstraints.DetailsPositionExtra,position);
+                    intent.putExtra(IntentConstraints.DetailsToDoExtra,toDoItem);
+                    intent.putExtra(IntentConstraints.DetailsReminderChanged,reminderChanged);
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }
+                else{
+                    Intent intent = new Intent(ToDoDetails.this,MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(IntentConstraints.DetailsToDoExtra,toDoItem);
+                    intent.putExtra(IntentConstraints.DetailsReminderChanged,reminderChanged);
+                    startActivity(intent);
+                    finish();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
