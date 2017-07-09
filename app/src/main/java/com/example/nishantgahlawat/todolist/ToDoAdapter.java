@@ -71,7 +71,7 @@ public class ToDoAdapter extends ArrayAdapter {
                     toDoButtonListener.onButtonClickListener(position);
             }
         });
-        tdVH.completedButton.setBackgroundResource(tdI.isDone()?R.drawable.checkedbox:R.drawable.uncheckedbox);
+        tdVH.completedButton.setBackgroundResource(tdI.isDone()?android.R.drawable.checkbox_on_background:android.R.drawable.checkbox_off_background);
         return convertView;
     }
 

@@ -77,7 +77,7 @@ public class ToDoDetails extends AppCompatActivity {
             TimePickerET.setText(new java.text.SimpleDateFormat("hh:mm a").format(toDoItem.getReminder()));
         }
 
-        doneButton.setBackgroundResource(toDoItem.isDone()?R.drawable.checkedbox:R.drawable.uncheckedbox);
+        doneButton.setBackgroundResource(toDoItem.isDone()?android.R.drawable.checkbox_on_background:android.R.drawable.checkbox_off_background);
 
         titleET.setText(toDoItem.getTitle());
         descriptionET.setText(toDoItem.getDescription());
@@ -86,7 +86,7 @@ public class ToDoDetails extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 toDoItem.toggleDone();
-                doneButton.setBackgroundResource(toDoItem.isDone()?R.drawable.checkedbox:R.drawable.uncheckedbox);
+                doneButton.setBackgroundResource(toDoItem.isDone()?android.R.drawable.checkbox_on_background:android.R.drawable.checkbox_off_background);
             }
         });
 
